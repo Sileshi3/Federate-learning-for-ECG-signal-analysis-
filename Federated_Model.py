@@ -1,9 +1,7 @@
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, Input, Lambda
-from tensorflow.keras.layers import MaxPooling2D
-from tensorflow.keras.layers import Activation
-from tensorflow.keras.layers import Flatten
-from tensorflow.keras.layers import Dense
+
+import random
+import tensorflow as tf
+from sklearn.metrics import accuracy_score
 
 def create_local_learner(data_list, label_list, num_clients=8, initial='clients'):
      #create a list of client names
@@ -54,11 +52,12 @@ def sum_scaled_weights(scaled_weight_list):
         avg_grad.append(layer_mean)
     return avg_grad
 
-    def test_model(X_test, Y_test,  model, comm_round):
-        cce = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
-        #logits = model.predict(X_test, batch_size=100)
-        y_predicted = model.predict(X_test)
-        loss = cce(Y_test, y_predicted)
-        acc = accuracy_score(tf.argmax(y_predicted, axis=1), tf.argmax(Y_test, axis=1))
-        print('Comm_round: {} | Global_acc: {:.3%} | Global_loss: {}'.format(comm_round, acc, loss))
-        return acc, loss
+def test_model(X_test, Y_test,  model, comm_round):
+    
+    cce = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
+    #logits = model.predict(X_test, batch_size=100)
+    y_predicted = model.predict(X_test)
+    loss = cce(Y_test, y_predicted)
+    acc = accuracy_score(tf.argmax(y_predicted, axis=1), tf.argmax(Y_test, axis=1))
+    print('Comm_round: {} | Global_acc: {:.3%} | Global_loss: {}'.format(comm_round, acc, loss))
+    return acc, loss

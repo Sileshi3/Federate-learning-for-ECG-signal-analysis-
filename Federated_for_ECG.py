@@ -7,7 +7,6 @@ from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer 
 from sklearn.utils import shuffle
-from sklearn.metrics import accuracy_score
 
 import tensorflow as tf
 from tensorflow import expand_dims
@@ -23,6 +22,7 @@ from collections import Counter
 
 from Federated_Model import *
 from model import *
+from plot import ploter
 debug = 0
 
 train_data=pd.read_csv('Dataset/mitbih_train.csv',header=None)
@@ -39,7 +39,7 @@ X_test=test_data.iloc[:,:-1].values
 X_train_noise=np.array(X_train)
 X_test_noise=np.array(X_test)
 
-plt.plot(X_train[16])
+#plt.plot(X_train[16])
 
 def gaussian_noise(signal):
     noise=np.random.normal(0,0.01)
@@ -81,13 +81,13 @@ class_distribution = class_labels.value_counts()
 label_name=class_name_labeler(class_distribution.index)
 
 # Plot the class distribution
-plt.figure(figsize=(5,3))
-plt.bar(label_name, class_distribution.values)
-plt.xlabel('Heart Beat Type')
-plt.ylabel('Count')
-plt.title('Class Distribution')
-plt.xticks(rotation=45)
-plt.show()
+#plt.figure(figsize=(5,3))
+#plt.bar(label_name, class_distribution.values)
+#plt.xlabel('Heart Beat Type')
+#plt.ylabel('Count')
+#plt.title('Class Distribution')
+#plt.xticks(rotation=45)
+#plt.show()
 
 # Calculate and print the class imbalance ratio
 imbalance_ratio = class_distribution.min() / class_distribution.max()
@@ -155,3 +155,17 @@ for comm_round in range(comms_round):
         global_acc, global_loss = test_model(X_test, Y_test, global_model, comm_round)
         global_acc_list.append(global_acc)
         global_loss_list.append(global_loss)
+ 
+#Evaluation using acc curve,error and confusion matrix        
+ploter(global_acc_list,global_loss_list)
+cm = confusion_matrix(target_test, y_pred)
+target_names = list("NSVFQ") 
+plt.figure(figsize=(8, 6))
+sns.set(font_scale=1.2)  # Adjust font size for better readability
+sns.heatmap(cm, annot=True, fmt='d', xticklabels=target_names, yticklabels=target_names)
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix') 
+clf_report = classification_report(target_test, y_pred, target_names=target_names, output_dict=True)
+print(classification_report(target_test, y_pred, target_names=target_names))
+plt.show()
