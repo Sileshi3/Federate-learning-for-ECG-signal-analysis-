@@ -27,8 +27,8 @@ from keras.layers import Conv1D, MaxPooling1D, Flatten, Dense
 
 debug = 0
 
-train_data=pd.read_csv('Dataset/mitbih_train.csv',header=None)
-test_data=pd.read_csv('Dataset/mitbih_test.csv',header=None)
+train_data=pd.read_csv('mitbih_train.csv',header=None)
+test_data=pd.read_csv('mitbih_test.csv',header=None)
 target_train=train_data.iloc[:,-1]
 target_test=test_data.iloc[:,-1]
 y_train=to_categorical(target_train)
