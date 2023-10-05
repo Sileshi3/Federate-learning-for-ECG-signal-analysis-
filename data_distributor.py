@@ -9,7 +9,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 num_clients=3
 initial='local'
 client_names = ['{}_{}'.format(initial, i+1) for i in range(num_clients)]
-print(client_names)
 
 train_data=pd.read_csv('Dataset/mitbih_train.csv',header=None)
 test_data=pd.read_csv('Dataset/mitbih_test.csv',header=None)
@@ -40,8 +39,4 @@ for (local_name, data) in local_model.items():
     local_batched[local_name] = batch_data(data)  
 
 all_client_names = list(local_batched.keys())#randomize client data - using keys
-client_names = random.sample(all_client_names, k=3)
-for clientc in client_names:
-    print(clientc)
-
-test_batched = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(len(y_test))
+client_names = random.sample(all_client_names, k=3) 
